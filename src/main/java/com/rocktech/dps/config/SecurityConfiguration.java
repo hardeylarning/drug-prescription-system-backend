@@ -38,7 +38,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors();
         http.csrf().disable()
-                .authorizeRequests().antMatchers("/login").permitAll() // accessible endpoints without authentication
+                .authorizeRequests().antMatchers("/login", "/h2-console").permitAll() // accessible endpoints without authentication
                 .antMatchers(HttpHeaders.ALLOW).permitAll()
                 .anyRequest().authenticated()
                 .and()
