@@ -4,16 +4,15 @@ import com.rocktech.dps.model.Role;
 import com.rocktech.dps.model.User;
 import com.rocktech.dps.repository.RoleRepository;
 import com.rocktech.dps.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
+@Slf4j
 public class UserService {
     @Autowired
     UserRepository userRepository;
@@ -22,6 +21,8 @@ public class UserService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    private String password;
 
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -32,17 +33,24 @@ public class UserService {
     }
 
     public User insert(User user) {
-        Role role = new Role();
-        role.setRoleName("USER");
+        Role role = roleRepository.findById(1).get();
+//        role.setId(1);
         Set<Role> roles = new HashSet<>();
+        password = getEncodedPassword(user.getPassword());
+        user.setPassword(password);
         roles.add(role);
         user.setRoles(roles);
+        user.setRegisteredDate(new Date());
+
+        log.info("Encoded Password:=> "+password);
         return userRepository.save(user);
     }
 
     public int updateUser(int id, User user) {
         Optional<User> user1 = userRepository.findById(id);
         if (user1.isPresent()){
+            password = getEncodedPassword(user.getPassword());
+            user.setPassword(password);
             userRepository.save(user);
             return id;
         }
