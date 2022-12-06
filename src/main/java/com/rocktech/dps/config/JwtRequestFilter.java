@@ -42,9 +42,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 System.out.println("Jwt token is expired");
             }
         }
-        else {
-            System.out.println("Invalid Request");
-        }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = jwtService.loadUserByUsername(username);
             if (jwtUtil.validateToken(token, userDetails)){

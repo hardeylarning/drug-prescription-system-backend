@@ -3,13 +3,14 @@ package com.rocktech.dps.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -44,7 +45,9 @@ public class JwtUtil {
     }
 
     public String generateToken(UserDetails userDetails){
-        Map<String, Object> claims = new HashMap<>();
+//        Collection<? extends GrantedAuthority> claims = userDetails.getAuthorities();
+        Claims claims = Jwts.claims().setSubject(userDetails.getUsername());
+        claims.put("scopes", userDetails.getAuthorities().stream().map(s -> s.toString()).collect(Collectors.toList()));
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())

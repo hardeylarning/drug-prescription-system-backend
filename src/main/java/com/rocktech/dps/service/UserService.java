@@ -34,7 +34,11 @@ public class UserService {
 
     public User insert(User user) {
         Role role = roleRepository.findById(1).get();
-//        role.setId(1);
+        Optional<User> userOptional = userRepository.findByUserName(user.getUserName());
+        if (userOptional.isPresent()) {
+            return userOptional.get();
+        }
+
         Set<Role> roles = new HashSet<>();
         password = getEncodedPassword(user.getPassword());
         user.setPassword(password);
@@ -51,6 +55,7 @@ public class UserService {
         if (user1.isPresent()){
             password = getEncodedPassword(user.getPassword());
             user.setPassword(password);
+            user.setId(id);
             userRepository.save(user);
             return id;
         }

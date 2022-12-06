@@ -27,7 +27,6 @@ public class UserController {
     }
 
     @PostMapping("add")
-    @PreAuthorize("hasRole('ADMIN')")
     public User addUser(@RequestBody User user) {
         return userService.insert(user);
     }
@@ -38,9 +37,9 @@ public class UserController {
         return String.valueOf(userService.updateUser(id, user));
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public void deleteUser(int id) {
+    public void deleteUser(@PathVariable int id) {
         userService.deleteUser(id);
     }
 
